@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,17 +33,20 @@ public class Main {
         try {
             Mapping mapping = objectMapper.readValue(data.toString(), Mapping.class);
 
-            String decodedCityName = mapping.convertCityName();
-            System.out.println(decodedCityName);
-
-
-            //String text = String.format("Weather in %s: \n%s", mapping.getCityName(), mapping.getCurrent().toString());
             StringBuilder text = new StringBuilder(String.format("Weather in %s \n%s", mapping.getCityName(), mapping.getCurrent().toString()));
-            text.append(String.format(" %s", mapping.getWeatherSymbolName()));
-            System.out.println(text.toString());
+            text.append(String.format(" %s\n", mapping.getCurrent().getWeatherSymbolName()));
 
-            //byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
-            //String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
+            List<Forecast> forecasts = mapping.getForecasts();
+            for (Forecast forecast : forecasts) {
+
+                text.append(String.format("\n%s", forecast.getWeekday()));
+//                text.append(String.format(" %s", forecast.getWeatherSymbolId()));
+                text.append(String.format(" %s", forecast.getTempLow()));
+                text.append(String.format("-%s℃", forecast.getTempHigh()));
+                text.append(String.format(" \ud83d\udca7 %s mm", forecast.getPrecipMean()));
+            }
+
+
 
             TelegramConnector tc = new TelegramConnector();
 

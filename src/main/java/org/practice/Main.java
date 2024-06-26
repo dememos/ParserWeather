@@ -2,6 +2,7 @@ package org.practice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,7 +11,8 @@ import java.util.Map;
 
 
 public class Main {
-    static String urlVersion = "https://www.meteoschweiz.admin.ch/product/output/versions.json";
+    static Dotenv dotenv = Dotenv.load();
+    static String urlVersion = "https://" + dotenv.get("WEATHER_URL") + "/product/output/versions.json";
 
     public static void main(String[] args) throws IOException {
         JsonNode rootNodeVersion = null;
@@ -66,6 +68,6 @@ public class Main {
 
 
     private static String makeUrlToGetForecast(String forecastNodeVersion) {
-        return String.format("https://www.meteoschweiz.admin.ch/product/output/weather-widget/forecast/version__%s/en/531200.json", forecastNodeVersion);
+        return String.format("https://" + dotenv.get("WEATHER_URL") + "/product/output/weather-widget/forecast/version__%s/en/531200.json", forecastNodeVersion);
     }
 }

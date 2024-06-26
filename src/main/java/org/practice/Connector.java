@@ -37,9 +37,9 @@ public class Connector {
     public static String sendPostRequest(String actionAdr, String args) throws IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(actionAdr);
-            httpPost.setHeader("Content-Type", "application/json; charset=UTF-8");
+            httpPost.setHeader("Content-Type", "application/json");
 
-            StringEntity entity = new StringEntity(args);
+            StringEntity entity = new StringEntity(args, "UTF-8");
             httpPost.setEntity(entity);
 
             try (CloseableHttpResponse response = httpClient.execute(httpPost)) {

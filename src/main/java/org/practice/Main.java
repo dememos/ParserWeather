@@ -13,15 +13,15 @@ public class Main {
     static String urlVersion = "https://www.meteoschweiz.admin.ch/product/output/versions.json";
 
     public static void main(String[] args) throws IOException {
-        JsonNode rootNodeForVersion = null;
+        JsonNode rootNodeVersion = null;
         JsonNode rootNodeForecast = null;
         Connector connector = new Connector();
         try {
-            rootNodeForVersion = connector.sendGetRequest(urlVersion);
+            rootNodeVersion = connector.sendGetRequest(urlVersion);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        JsonNode forecastNodeVersion = rootNodeForVersion.path("weather-widget/forecast");
+        JsonNode forecastNodeVersion = rootNodeVersion.path("weather-widget/forecast");
         String urlForecast = makeUrlToGetForecast(forecastNodeVersion.asText());
 
         System.out.println(urlForecast);
@@ -37,17 +37,19 @@ public class Main {
             System.out.println(decodedCityName);
 
 
-            String text = String.format("Weather in %s \n%s", mapping.getCityName(), mapping.getCurrent().toString());
-            System.out.println(text);
+            //String text = String.format("Weather in %s: \n%s", mapping.getCityName(), mapping.getCurrent().toString());
+            StringBuilder text = new StringBuilder(String.format("Weather in %s \n%s", mapping.getCityName(), mapping.getCurrent().toString()));
+            text.append(String.format(" %s", mapping.getWeatherSymbolName()));
+            System.out.println(text.toString());
 
-            byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
-            String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
+            //byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
+            //String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
 
             TelegramConnector tc = new TelegramConnector();
 
             Map<String, Object> jsonMap = new HashMap<>();
             jsonMap.put("chat_id", tc.chatId);
-            jsonMap.put("text", utf8EncodedString);
+            jsonMap.put("text", text.toString());
             jsonMap.put("parse_mode", "HTML");
             String jsonArgs = objectMapper.writeValueAsString(jsonMap);
 

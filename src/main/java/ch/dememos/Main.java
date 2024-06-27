@@ -1,13 +1,11 @@
-package org.practice;
+package ch.dememos;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class Main {
@@ -48,20 +46,13 @@ public class Main {
                 text.append(String.format(" \ud83d\udca7 %s mm", forecast.getPrecipMean()));
             }
 
-
-
             TelegramConnector tc = new TelegramConnector();
+            tc.sendMessage(text.toString());
 
-            Map<String, Object> jsonMap = new HashMap<>();
-            jsonMap.put("chat_id", tc.chatId);
-            jsonMap.put("text", text.toString());
-            jsonMap.put("parse_mode", "HTML");
-            String jsonArgs = objectMapper.writeValueAsString(jsonMap);
-
-            String response = Connector.sendPostRequest(tc.getUrl(), jsonArgs);
-            System.out.println(response);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,4 +1,4 @@
-package org.practice;
+package ch.dememos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
